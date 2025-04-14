@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"voicy-sample-app/controllers"
 )
 
 func main() {
@@ -16,11 +16,7 @@ func main() {
 	})
 
 	apiGroup := r.Group("/api")
-	apiGroup.POST("/register", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"data": "register endpoint",
-		})
-	})
+	apiGroup.POST("/register", controllers.Register)
 
 	r.Run(":8080")
 }
