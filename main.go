@@ -1,14 +1,26 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"encoding/json"
 	"net/http"
-	"voicy-sample-app/controllers"
+	"os"
+
+	"github.com/gin-gonic/gin"
 )
+
+type Sound struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Personality string `json:"personality"`
+	CreatedAt   string `json:"created_at"`
+}
+
+var sounds []Sound
 
 func main() {
 	r := gin.Default()
 
+	// healthcheck用のエンドポイント
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "healthy",
@@ -16,7 +28,25 @@ func main() {
 	})
 
 	apiGroup := r.Group("/api")
-	apiGroup.POST("/register", controllers.Register)
+	apiGroup.GET("/sounds", getSounds)
 
 	r.Run(":8080")
+}
+
+func getSounds(c *gin.Context) {
+	// JSONファイルを開く
+	file, err := os.Open("data.json")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Faild to open data file"})
+		return
+	}
+	defer file.Close()
+
+	// JSONデータをデコードする
+	if err := json.NewDecoder(file).Decode(&sounds); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Faild to decode data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, sounds)
 }
