@@ -4,19 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"voicy-sample-app/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Sound struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Personality string `json:"personality"`
-	CreatedAt   string `json:"created_at"`
+// ヘルスチェック用の関数
+func HealthCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": "healthy",
+	})
 }
 
-var sounds []Sound
+var sounds []models.Sound
 
+// 音声データの一覧を取得する関数
 func GetSounds(c *gin.Context) {
 	// JSONファイルを開く
 	file, err := os.Open("data/data.json")
@@ -34,5 +36,3 @@ func GetSounds(c *gin.Context) {
 
 	c.JSON(http.StatusOK, sounds)
 }
-
-// TODO:　単体テストを実装

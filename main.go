@@ -1,20 +1,16 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"voicy-sample-app/handlers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
 
 	// healthcheck用のエンドポイント
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "healthy",
-		})
-	})
+	r.GET("/healthcheck", handlers.HealthCheck)
 
 	apiGroup := r.Group("/api")
 	apiGroup.GET("/sounds", handlers.GetSounds)
