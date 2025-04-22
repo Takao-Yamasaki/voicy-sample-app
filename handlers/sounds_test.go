@@ -74,6 +74,7 @@ func TestGetSounds(t *testing.T) {
 		expectedCode   int
 		expectedSounds int
 	}{
+		// TODO: 正常系のテストを実装すること
 		// {
 		// 	name:           "正常系（データが2件存在する場合）",
 		// 	httpMethod:     "GET",
