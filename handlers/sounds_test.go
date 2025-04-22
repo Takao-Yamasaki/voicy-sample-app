@@ -88,13 +88,13 @@ func TestGetSounds(t *testing.T) {
 			expectedCode:   http.StatusNotFound,
 			expectedSounds: 0,
 		},
-		// {
-		// 	name:           "異常系（不正なメソッド）",
-		// 	httpMethod:     "POST",
-		// 	url:            "/api/sounds",
-		// 	expectedCode:   http.StatusMethodNotAllowed,
-		// 	expectedSounds: 0,
-		// },
+		{
+			name:           "異常系（不正なメソッド）",
+			httpMethod:     "POST",
+			url:            "/api/sounds",
+			expectedCode:   http.StatusNotFound,
+			expectedSounds: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
