@@ -61,52 +61,50 @@ func TestHealthCheck(t *testing.T) {
 	}
 }
 
-// TODO: 単体テストの実装から
 // GetSounds関数のテスト
-// func TestGetSounds(t *testing.T) {
-// 	// テスト用にGinのルーターを設定
-// 	router := gin.Default()
-// 	router.GET("/api/sounds", GetSounds)
+func TestGetSounds(t *testing.T) {
+	// テスト用にGinのルーターを設定
+	router := gin.Default()
+	router.GET("/api/sounds", handlers.GetSounds)
 
-// 	tests := []struct {
-// 		name           string
-// 		expectedCode   int
-// 		expectedSounds int
-// 	}{
-// 		{
-// 			name:           "正常系（データが2件存在する場合）",
-// 			expectedCode:   http.StatusOK,
-// 			expectedSounds: 2,
-// 		},
-// 		{
-// 			name:           "異常系（データが存在しない場合）",
-// 			expectedCode:   http.StatusInternalServerError,
-// 			expectedSounds: 0,
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			// テスト用のリクエストを作成
-// 			req, _ := http.NewRequest("GET", "/api/sounds", nil)
-// 			res := httptest.NewRecorder()
-// 			router.ServeHTTP(res, req)
+	tests := []struct {
+		name           string
+		httpMethod     string
+		url            string
+		expectedCode   int
+		expectedSounds int
+	}{
+		// {
+		// 	name:           "正常系（データが2件存在する場合）",
+		// 	httpMethod:     "GET",
+		// 	url:            "/api/sounds",
+		// 	expectedCode:   http.StatusOK,
+		// 	expectedSounds: 2,
+		// },
+		{
+			name:           "異常系（不正なURL）",
+			httpMethod:     "GET",
+			url:            "/api/invalid",
+			expectedCode:   http.StatusNotFound,
+			expectedSounds: 0,
+		},
+		// {
+		// 	name:           "異常系（不正なメソッド）",
+		// 	httpMethod:     "POST",
+		// 	url:            "/api/sounds",
+		// 	expectedCode:   http.StatusMethodNotAllowed,
+		// 	expectedSounds: 0,
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// テスト用のリクエストを作成
+			req, _ := http.NewRequest(tt.httpMethod, tt.url, nil)
+			res := httptest.NewRecorder()
+			router.ServeHTTP(res, req)
 
-// 			// ステータスコードの確認
-// 			if res.Code != tt.expectedCode {
-// 				t.Errorf("Expected status code %d, but got %d", tt.expectedCode, res.Code)
-// 			}
-
-// 			// 成功時のみ、レスポンスボディを確認
-// 			if tt.expectedCode == http.StatusOK {
-// 				var sounds []models.Sound
-// 				if err := json.Unmarshal(res.Body., &sounds); err != nil {
-// 					t.Fatalf("Failed to decode response body: %v", err)
-// 				}
-
-// 				if len(sounds) != tt.expectedSounds {
-// 					t.Errorf("Expected %d sounds, but get %d", tt.expectedSounds, len(sounds))
-// 				}
-// 			}
-// 		})
-// 	}
-// }
+			// ステータスコードの確認
+			assert.Equal(t, tt.expectedCode, res.Code)
+		})
+	}
+}
